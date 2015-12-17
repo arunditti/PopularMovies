@@ -2,7 +2,8 @@
 <ScrollView
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aandroid="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -52,6 +53,32 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingBottom="16dp"/>
 
+            <ImageButton android:id="@+id/favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="setFavorite"/>
+
+            <Button
+                android:id="@+id/movie_reviews"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_reviews_button"
+                android:onClick="launchReviewsActivity" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Trailers"
+                />
+
+            <ListView android:id="@+id/listview_trailers"
+                android:orientation="vertical"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content">
+            </ListView>
+
         </LinearLayout>
     </LinearLayout>
+
 </ScrollView>

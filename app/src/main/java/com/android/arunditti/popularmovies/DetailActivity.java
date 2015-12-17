@@ -35,9 +35,10 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new DetailFragment())
+                    .add(R.id.container, new DetailActivityFragment())
                     .commit();
         }
     }
@@ -68,7 +69,7 @@ public class DetailActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class DetailFragment extends Fragment {
+  /**  public static class DetailFragment extends Fragment {
 
 
         public DetailFragment() {
@@ -97,6 +98,6 @@ public class DetailActivity extends AppCompatActivity {
 
             return rootView;
         }
-    }
+    }*/
 
 }

@@ -108,6 +108,7 @@ public class MainActivityFragment extends Fragment {
         private final String LOG_TAG = FetchPopularMoviesTask.class.getSimpleName();
 
         // These are the names of the JSON objects that need to be extracted.
+        final String PMD_ID = "id";
         final String PMD_LIST = "results";
         final String PMD_TITLE = "title";
         final String PMD_POSTER = "poster_path";
@@ -126,12 +127,13 @@ public class MainActivityFragment extends Fragment {
             movieItems.clear();
             for (int i = 0; i < moviesArray.length(); i++) {
                 JSONObject popularMovies = moviesArray.getJSONObject(i);
+                String id = popularMovies.getString(PMD_ID);
                 String title = popularMovies.getString(PMD_TITLE);
                 String releaseDate = popularMovies.getString(PMD_RELEASE_DATE);
                 String movieOverview= popularMovies.getString(PMD_OVERVIEW);
                 String rating= popularMovies.getString(PMD_RATING);
                 String imagePath = PMD_PICTURE_PATH + PMD_PICTURE_SIZE + popularMovies.getString(PMD_POSTER);
-                movieItems.add(new MovieItem(title, releaseDate, movieOverview, rating, imagePath));
+                movieItems.add(new MovieItem(id, title, releaseDate, movieOverview, rating, imagePath));
             }
 
             return movieItems;
@@ -159,6 +161,7 @@ public class MainActivityFragment extends Fragment {
                         .appendQueryParameter(API_KEY, BuildConfig.PICASSO_API_KEY)
                         .build();
                 URL url = new URL(builtUri.toString());
+
 
                 // Create the request to Picasso, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
