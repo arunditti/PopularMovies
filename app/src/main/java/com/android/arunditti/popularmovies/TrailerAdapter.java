@@ -24,9 +24,9 @@ public class TrailerAdapter extends BaseAdapter {
 
 
     //public class TrailerAdapter extends ArrayAdapter<MovieTrailer> {
-   private Context mContext;
+   public Context mContext;
     //int layoutResourceId;
-    private List<MovieTrailer> movieTrailers;
+    public ArrayList<MovieTrailer> movieTrailers;
 
     //create a class to hold your exact set of views
     public class ViewHolder {
@@ -39,7 +39,7 @@ public class TrailerAdapter extends BaseAdapter {
     }
 
     //public TrailerAdapter(Context mContext, int layoutResourceId, ArrayList<MovieTrailer> movieTrailers) {
-    public TrailerAdapter(Context mContext, List<MovieTrailer> movieTrailers) {
+    public TrailerAdapter(Context mContext, ArrayList<MovieTrailer> movieTrailers) {
         //super(mContext, R.layout.fragment_detail, movieTrailers);
         super();
         this.mContext = mContext;
@@ -47,10 +47,10 @@ public class TrailerAdapter extends BaseAdapter {
         this.movieTrailers = movieTrailers;
     }
 
-    public void updateTrailerList(List<MovieTrailer> movieTrailers) {
+   /** public void updateTrailerList(ArrayList<MovieTrailer> movieTrailers) {
         this.movieTrailers = movieTrailers;
         this.notifyDataSetChanged();
-    }
+    }*/
 
    /** public void add(MovieTrailer movieTrailers) {
                 mMovieTrailers.add(movieTrailers);
@@ -72,8 +72,8 @@ public class TrailerAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-       // viewHolder.trailerTitle.setText(movieTrailers.get(position).getTrailerName());
-        viewHolder.trailerTitle.setText(movieTrailer.getTrailerName());
+       //viewHolder.trailerTitle.setText(movieTrailers.get(position).getTrailerName());
+        viewHolder.trailerTitle.setText(movieTrailer.mName);
 
       /** String yt_thumbnail_url = "http:/ TextView trailerName = (TextView) view.findViewById(R.id.listView_trailers);/img.youtube.com/vi/" + movieTrailers.get(position).getKey() + "/0.jpg";
        Picasso.with(mContext)
@@ -90,17 +90,20 @@ public class TrailerAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return movieTrailers.get(position);
+        //return movieTrailers.get(position);
+        return null;
     }
 
     @Override
     public int getCount() {
+        if(movieTrailers == null) return 0;   //added
         return movieTrailers.size();
     }
 
     @Override
     public long getItemId(int position) {
-        return position;
+        //return position;
+        return 0;
     }
 
 }

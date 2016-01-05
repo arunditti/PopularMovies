@@ -38,7 +38,7 @@ public class MoviesContract {
         public static final String COLUMN_MOVIE_OVERVIEW = "overview";
 
         // Column for favourite movie
-        public static final String COLUMN_MOVIE_FAVORITE = "favourite";
+        public static final String COLUMN_MOVIE_FAVORITE = "favorite";
     }
 
     //  Inner class that defines the table contents of the reviews table

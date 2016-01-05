@@ -38,8 +38,10 @@ import java.util.List;
  */
 public class MainActivityFragment extends Fragment {
 
+    private TrailerAdapter mTrailerAdapter;
     private PopularMovieAdapter mPopularMovieAdapter;
-    private List<MovieItem> movieItems = new ArrayList<MovieItem>();
+    private ArrayList<MovieItem> movieItems = new ArrayList<MovieItem>();
+    private ArrayList<MovieTrailer> movieTrailers = new ArrayList<MovieTrailer>();
 
     public MainActivityFragment() {
     }
@@ -54,16 +56,6 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main_activity_fragment, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -103,7 +95,7 @@ public class MainActivityFragment extends Fragment {
         updateMovieList();
     }
 
-    public class FetchPopularMoviesTask extends AsyncTask<String, Void, List<MovieItem>> {
+    public class FetchPopularMoviesTask extends AsyncTask<String, Void, ArrayList<MovieItem>> {
 
         private final String LOG_TAG = FetchPopularMoviesTask.class.getSimpleName();
 
@@ -118,7 +110,7 @@ public class MainActivityFragment extends Fragment {
         final String PMD_RELEASE_DATE = "release_date";
         final String PMD_PICTURE_SIZE    = "w185";
 
-        private List<MovieItem> getPopularMoviesDataFromJson(String PopularMoviesJsonStr)
+        private ArrayList<MovieItem> getPopularMoviesDataFromJson(String PopularMoviesJsonStr)
                 throws JSONException {
 
             JSONObject PopularMoviesJson = new JSONObject(PopularMoviesJsonStr);
@@ -127,13 +119,13 @@ public class MainActivityFragment extends Fragment {
             movieItems.clear();
             for (int i = 0; i < moviesArray.length(); i++) {
                 JSONObject popularMovies = moviesArray.getJSONObject(i);
-                String id = popularMovies.getString(PMD_ID);
+                String movieId = popularMovies.getString(PMD_ID);
                 String title = popularMovies.getString(PMD_TITLE);
                 String releaseDate = popularMovies.getString(PMD_RELEASE_DATE);
                 String movieOverview= popularMovies.getString(PMD_OVERVIEW);
                 String rating= popularMovies.getString(PMD_RATING);
                 String imagePath = PMD_PICTURE_PATH + PMD_PICTURE_SIZE + popularMovies.getString(PMD_POSTER);
-                movieItems.add(new MovieItem(id, title, releaseDate, movieOverview, rating, imagePath));
+                movieItems.add(new MovieItem(movieId, title, releaseDate, movieOverview, rating, imagePath));
             }
 
             return movieItems;
@@ -141,7 +133,7 @@ public class MainActivityFragment extends Fragment {
         }
 
         @Override
-        protected List<MovieItem> doInBackground(String... params) {
+        protected ArrayList<MovieItem> doInBackground(String... params) {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
@@ -223,7 +215,7 @@ public class MainActivityFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute (List<MovieItem> result){
+        protected void onPostExecute (ArrayList<MovieItem> result){
             if (result != null) {
                 mPopularMovieAdapter.updateMovieList(movieItems);
             }

@@ -1,5 +1,7 @@
 package com.android.arunditti.popularmovies;
 
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -12,13 +14,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.arunditti.popularmovies.MovieItem;
 import com.android.arunditti.popularmovies.MovieTrailer;
 import com.android.arunditti.popularmovies.TrailerAdapter;
+import com.android.arunditti.popularmovies.DetailActivity;
+import com.android.arunditti.popularmovies.ReviewActivity;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -40,17 +47,33 @@ import java.util.List;
  */
 public class DetailActivityFragment extends Fragment {
 
-    public static final String YOUTUBE_VIDEO_ID = "VIDEO_ID";
+    public static final String YOU_TUBE_VIDEO_URL = "http://www.youtube.com/watch?v=";
     public static final String YOUTUBE_URI = "vnd.youtube:";
     final String TRAILER_KEY = "key";
     private static final String YOUTUBE_IMAGE_URL_PREFIX = "http://img.youtube.com/vi/";
     private static final String YOUTUBE_IMAGE_URL_SUFFIX = "/0.jpg";
+    private MovieItem movieItem;
     ListView listView;
-
+    private PopularMovieAdapter mPopularMovieAdapter;
     private TrailerAdapter mTrailerAdapter;
-    private List<MovieTrailer> movieTrailers = new ArrayList<MovieTrailer>();
+    private ArrayList<MovieTrailer> movieTrailers = new ArrayList<MovieTrailer>();
+   // private List<MovieTrailer> movieTrailers;
 
     public DetailActivityFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+        if (savedInstanceState == null || !savedInstanceState.containsKey("movieTrailers")) {
+            movieTrailers = new ArrayList<MovieTrailer>();
+        } else {
+            movieTrailers = savedInstanceState.getParcelableArrayList("movieTrailers");
+        }
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -59,9 +82,14 @@ public class DetailActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
+       /** Intent intent = getActivity().getIntent();
+        if (intent == null) {
+            return null;
+        }*/
+
         ImageView movieImage = (ImageView) rootView.findViewById(R.id.movie_image);
 
-        MovieItem movieItem = (MovieItem)getActivity().getIntent().getParcelableExtra("MovieItem");
+       final MovieItem movieItem = (MovieItem)getActivity().getIntent().getParcelableExtra("MovieItem");
         ((TextView) rootView.findViewById(R.id.movie_title))
                 .setText("Movie Title: " + movieItem.mMovieTitle);
         ((TextView) rootView.findViewById(R.id.movie_release_date))
@@ -75,63 +103,50 @@ public class DetailActivityFragment extends Fragment {
 
        // Picasso.with(getActivity()).load(movieTrailer.getTrailerImage()).fit().into(trailerImage);
 
-        MovieTrailer movieTrailer = (MovieTrailer)getActivity().getIntent().getParcelableExtra("MovieTrailer");
-//        new FetchMovieTrailerTask().execute(movieTrailer.getItemId());
-        ((TextView) rootView.findViewById(R.id.trailer_title))
-                .setText("Trailer: \n" + movieTrailer.mName);
-
-
-        //new FetchMovieTrailerTask().execute(movieItem.getItemId());
-
-           /** ((TextView) rootView.findViewById(R.id.movie_trailers_title))
-                .setText("Trailer: \n" + movieItem.mMovieTitle);*/
-
 
         // Get a reference to the ListView, and attach this adapter to it.
 
         ListView listView = ((ListView) rootView.findViewById(R.id.listview_trailers));
-        mTrailerAdapter = new TrailerAdapter(getActivity().getApplicationContext(), movieTrailers);
-
+        mTrailerAdapter = new TrailerAdapter(getActivity(), movieTrailers);
         listView.setAdapter(mTrailerAdapter);
 
 
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+          listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+           @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
-                    String youTubeKey = TRAILER_KEY;
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + youTubeKey));
-                    intent.putExtra("VIDEO_ID", youTubeKey);
+                String VideoKey = mTrailerAdapter.movieTrailers.get(position).mKey;
+
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(YOUTUBE_URI + VideoKey));
                     startActivity(intent);
+                } catch (ActivityNotFoundException ex) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(YOU_TUBE_VIDEO_URL + VideoKey));
+                        startActivity(intent);
+                    }
                 }
             });
 
-      //  new FetchMovieTrailerTask().execute(movieItem.getItemId());
+        Button mReviewsButton = (Button) rootView.findViewById(R.id.movie_reviews);
+        mReviewsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ReviewActivity.class);
+                intent.putExtra("Id", movieItem.movieId);
+                startActivity(intent);
+            }
+        });
 
-       //String[] trailerui = {"http://api.themoviedb.org/3/movie/" + movieItem.getItemId() + "/videos?api_key=PICASSO_API_KEY"};
-       //new FetchMovieTrailerTask().execute(trailerui);
+        FetchMovieTrailerTask movieTrailersTask = new FetchMovieTrailerTask();
+        movieTrailersTask.execute(movieItem.movieId);
+
+
+        
 
         return rootView;
     }
 
-    private void updateTrailerList() {
-       // MovieTrailer movieTrailer = (MovieTrailer)getActivity().getIntent().getParcelableExtra("MovieTrailer");
-        FetchMovieTrailerTask movieTask = new FetchMovieTrailerTask();
-       // SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        //String youtube_URI = prefs.getString(getString(R.string.pref_location_key),
-          //      getString(R.string.pref_location_default));
-        //String[] trailerParam = {"http://api.themoviedb.org/3/movie/" + movieItem.getItemId() + "/videos?api_key=PICASSO_API_KEY"};
-        // new FetchMovieTrailerTask().execute(trailerParam);
-        movieTask.execute();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateTrailerList();
-    }
-
-    public class FetchMovieTrailerTask extends AsyncTask<String, Void, List<MovieTrailer>> {
+    public class FetchMovieTrailerTask extends AsyncTask<String, Void, ArrayList<MovieTrailer>> {
 
         private final String LOG_TAG = FetchPopularMoviesTask.class.getSimpleName();
     //ArrayList<MovieTrailer> movieTrailers = new ArrayList<>();
@@ -148,14 +163,14 @@ public class DetailActivityFragment extends Fragment {
         //final String TRAILER_SIZE = "size";
         //final String TRAILER_TYPE = "type";
 
-        private List<MovieTrailer> getTrailerDataFromJson(String TrailerJsonStr)
+        private ArrayList<MovieTrailer> getTrailerDataFromJson(String TrailerJsonStr)
                 throws JSONException {
 
-            List<MovieTrailer> movieTrailers = new ArrayList<MovieTrailer>();
+            ArrayList<MovieTrailer> resultMovieTrailers = new ArrayList<MovieTrailer>();
             JSONObject TrailerJson = new JSONObject(TrailerJsonStr);
             JSONArray trailersArray = TrailerJson.getJSONArray(TRAILER_RESULTS);
 
-            movieTrailers.clear();
+            resultMovieTrailers.clear();
             for (int i = 0; i < trailersArray.length(); i++) {
                 JSONObject movieTrailerJson = trailersArray.getJSONObject(i);
                 String id = movieTrailerJson.getString(MOVIE_ID);
@@ -166,27 +181,30 @@ public class DetailActivityFragment extends Fragment {
                 //String type = movieTrailerJson.getString(TRAILER_TYPE);
                // movieTrailers.add(new MovieTrailer(id, key, name, site, size, type));
                MovieTrailer mT = new MovieTrailer(id, key, name);
-                movieTrailers.add(mT);
+                resultMovieTrailers.add(mT);
             }
 
-            for (MovieTrailer s : movieTrailers) {
+            for (MovieTrailer s : resultMovieTrailers) {
                 Log.v(LOG_TAG, "Trailer Entry: " + s);
+                Log.v(LOG_TAG, "Key: " + s.mKey);
             }
 
-            return movieTrailers;
+            return resultMovieTrailers;
 
         }
 
     @Override
-        protected List<MovieTrailer> doInBackground(String... params) {
+        protected ArrayList<MovieTrailer> doInBackground(String... params) {
+String movieId;
 
-            MovieItem movieItem = (MovieItem)getActivity().getIntent().getParcelableExtra("MovieItem");
-           // MovieTrailer movieTrailer = (MovieTrailer)getActivity().getIntent().getParcelableExtra("MovieTrailer");
+           // MovieItem movieItem = (MovieItem)getActivity().getIntent().getParcelableExtra("MovieItem");
 
             // If there's no zip code, there's nothing to look up.  Verify size of params.
-      /**   if (params.length == 0) {
+         if (params.length == 0) {
             return null;
-        }*/
+        }
+
+        movieId = params[0];
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
@@ -197,7 +215,7 @@ public class DetailActivityFragment extends Fragment {
                  // Construct the URL for the picasso popular movies query
 
 
-                final String POPULAR_MOVIE_BASE_URL= "http://api.themoviedb.org/3/movie";
+               final String POPULAR_MOVIE_BASE_URL= "http://api.themoviedb.org/3/movie";
                 final String API_KEY = "api_key";
 
                 //public static final String YOU_TUBE_VIDEO_URL = "http://www.youtube.com/watch?v=";
@@ -205,10 +223,11 @@ public class DetailActivityFragment extends Fragment {
 
 
                 Uri builtUri = Uri.parse(POPULAR_MOVIE_BASE_URL).buildUpon()
-                         .appendPath(movieItem.mMovieId)
+                         .appendPath(movieId)
                         .appendPath("videos")
                         .appendQueryParameter(API_KEY, BuildConfig.PICASSO_API_KEY)
                         .build();
+
                 URL url = new URL(builtUri.toString());
                 Log.v(LOG_TAG, "Built URI " + builtUri.toString());
 
@@ -270,17 +289,14 @@ public class DetailActivityFragment extends Fragment {
             return null;
         }
 
-  @Override
-        protected void onPostExecute (List<MovieTrailer> result) {
-      super.onPostExecute(result);
-      ArrayList<MovieTrailer> movieTrailers = new ArrayList<MovieTrailer>();
+      @Override
+            protected void onPostExecute (ArrayList<MovieTrailer> result) {
+            super.onPostExecute(result);
+            if (result != null) {
+                 mTrailerAdapter.movieTrailers = result;
+                 mTrailerAdapter.notifyDataSetChanged();
+          }
 
-        if (result != null) {
-            movieTrailers = new ArrayList<>();
-             mTrailerAdapter.updateTrailerList(movieTrailers);
       }
-  }
-
-
   }
 }

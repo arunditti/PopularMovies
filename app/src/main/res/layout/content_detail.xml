@@ -4,7 +4,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.android.arunditti.popularmoviesstage1.app.DetailActivity"
+    tools:context="com.android.arunditti.popularmovies.app.DetailActivity"
     tools:ignore="MergeRootFrame"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:layout="@layout/fragment_detail" />

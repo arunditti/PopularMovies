@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:showIn="@layout/activity_detail"
-        tools:context="com.android.arunditti.popularmoviesstage1.DetailFragment">
+        tools:context="com.android.arunditti.popularmovies.DetailFragment">
 
         <ImageView
             android:id="@+id/movie_image"
@@ -53,7 +53,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingBottom="16dp"/>
 
-            <ImageButton android:id="@+id/favorite"
+            <Button android:id="@+id/favorite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="setFavorite"/>
@@ -62,8 +62,7 @@
                 android:id="@+id/movie_reviews"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/label_reviews_button"
-                android:onClick="launchReviewsActivity" />
+                android:text="@string/label_reviews_button" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -72,11 +71,17 @@
                 android:text="Trailers"
                 />
 
-            <ListView android:id="@+id/listview_trailers"
+           <ListView android:id="@+id/listview_trailers"
                 android:orientation="vertical"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content">
             </ListView>
+
+           <!-- <LinearLayout android:id="@+id/linear_layout_trailers"
+                android:orientation="vertical"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content">
+            </LinearLayout> -->
 
         </LinearLayout>
     </LinearLayout>

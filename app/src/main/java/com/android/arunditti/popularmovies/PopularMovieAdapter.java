@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.android.arunditti.popularmovies.MovieItem;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ import java.util.List;
 public class PopularMovieAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<MovieItem> movieItems;
+    private ArrayList<MovieItem> movieItems;
 
     //create a class to hold your exact set of views
     public class ViewHolder {
@@ -31,13 +32,13 @@ public class PopularMovieAdapter extends BaseAdapter {
         }
     }
 
-    public PopularMovieAdapter(Context mContext, List<MovieItem> movieItems) {
+    public PopularMovieAdapter(Context mContext, ArrayList<MovieItem> movieItems) {
         super();
         this.mContext = mContext;
         this.movieItems = movieItems;
     }
 
-    public void updateMovieList(List<MovieItem> movieItems) {
+    public void updateMovieList(ArrayList<MovieItem> movieItems) {
         this.movieItems = movieItems;
         this.notifyDataSetChanged();
     }

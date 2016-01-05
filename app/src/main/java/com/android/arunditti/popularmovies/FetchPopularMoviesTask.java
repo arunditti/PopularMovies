@@ -26,7 +26,7 @@ import com.android.arunditti.popularmovies.PopularMovieAdapter;
  */
 
 // This application is not using this file. so can be deleted
-public class FetchPopularMoviesTask extends AsyncTask<String, Void, List<MovieItem>> {
+public class FetchPopularMoviesTask extends AsyncTask<String, Void, ArrayList<MovieItem>> {
     public FetchPopularMoviesTask() {
 
     }
@@ -34,7 +34,7 @@ public class FetchPopularMoviesTask extends AsyncTask<String, Void, List<MovieIt
     private final String LOG_TAG = FetchPopularMoviesTask.class.getSimpleName();
 
     private PopularMovieAdapter mPopularMovieAdapter;
-    private List<MovieItem> movieItems = new ArrayList<MovieItem>();
+    private ArrayList<MovieItem> movieItems = new ArrayList<MovieItem>();
 
     // These are the names of the JSON objects that need to be extracted.
     final String PMD_ID = "id";
@@ -47,7 +47,7 @@ public class FetchPopularMoviesTask extends AsyncTask<String, Void, List<MovieIt
     final String PMD_RELEASE_DATE = "release_date";
     final String PMD_PICTURE_SIZE    = "w185";
 
-    private List<MovieItem> getPopularMoviesDataFromJson(String PopularMoviesJsonStr)
+    private ArrayList<MovieItem> getPopularMoviesDataFromJson(String PopularMoviesJsonStr)
             throws JSONException {
 
         JSONObject PopularMoviesJson = new JSONObject(PopularMoviesJsonStr);
@@ -70,7 +70,7 @@ public class FetchPopularMoviesTask extends AsyncTask<String, Void, List<MovieIt
     }
 
     @Override
-    protected List<MovieItem> doInBackground(String... params) {
+    protected ArrayList<MovieItem> doInBackground(String... params) {
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -151,7 +151,7 @@ public class FetchPopularMoviesTask extends AsyncTask<String, Void, List<MovieIt
     }
 
     @Override
-    protected void onPostExecute (List<MovieItem> result){
+    protected void onPostExecute (ArrayList<MovieItem> result){
         if (result != null) {
             mPopularMovieAdapter.updateMovieList(movieItems);
         }
